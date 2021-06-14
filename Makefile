@@ -7,6 +7,10 @@ SHELL = /bin/bash
 build:
 	go build
 
+.PHONY: install
+install:
+	go install
+
 .PHONY: clean
 clean: ## Remove all files created by this Makefile
 	rm -rf \
