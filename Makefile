@@ -4,11 +4,11 @@ SHELL = /bin/bash
 .DEFAULT_GOAL = build
 
 .PHONY: build
-build:
+build: ## Build ewallet
 	go build
 
 .PHONY: install
-install:
+install: ## Install ewallet binary to local system
 	go install
 
 .PHONY: clean
