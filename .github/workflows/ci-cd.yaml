@@ -1,5 +1,9 @@
 name: CI & CD
 
+defaults:
+  run:
+    shell: /bin/bash
+
 on:
   push:
     branches:
