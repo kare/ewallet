@@ -2,7 +2,7 @@ name: CI & CD
 
 defaults:
   run:
-    shell: /bin/bash
+    shell: bash
 
 on:
   push:
