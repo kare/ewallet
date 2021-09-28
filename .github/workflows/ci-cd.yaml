@@ -25,6 +25,12 @@ jobs:
       - uses: actions/setup-go@v2.1.4
         with:
           go-version: ${{ matrix.go }}
+      - name: Check source is Go fmted
+        run: make -f Makefile.ci check-fmt
+      - name: Check source is Go fmt simplified
+        run: make -f Makefile.ci check-fmt-simplify
+      - name: Run staticcheck
+        run: make -f Makefile.ci staticcheck
       - uses: actions/cache@v2.1.6
         with:
           path: |
