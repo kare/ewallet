@@ -1,6 +1,5 @@
-
+---
 # https://docs.github.com/en/free-pro-team@latest/github/administering-a-repository/configuration-options-for-dependency-updates
-
 version: 2
 updates:
   - package-ecosystem: github-actions
@@ -17,8 +16,7 @@ updates:
     assignees:
       - kare
     labels:
-      - github-actions
-      - dependencies
+      - ci
   - package-ecosystem: gomod
     directory: /
     schedule:
@@ -33,6 +31,5 @@ updates:
     assignees:
       - kare
     labels:
-      - go
-      - dependencies
+      - build
 
