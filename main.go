@@ -8,6 +8,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/crypto"
 )
@@ -45,18 +46,26 @@ func publicKeyToString(publicKeyECDSA *ecdsa.PublicKey) string {
 	return pubKey[4:]
 }
 
+func addressToChecksumCase(address string) string {
+	a := common.HexToAddress(address)
+	return a.Hex()
+}
+
 func main() {
 	addressCmd := flag.NewFlagSet("address", flag.ExitOnError)
 	publicCmd := flag.NewFlagSet("public", flag.ExitOnError)
+	checksumCmd := flag.NewFlagSet("checksum", flag.ExitOnError)
 	flag.Parse()
 	flag.Usage = func() {
 		out := flag.CommandLine.Output()
-		fmt.Fprintf(out, "Usage of %s: command\n", os.Args[0])
+		cmdName := os.Args[0]
+		fmt.Fprintf(out, "Usage of %s: %s command\n", cmdName, cmdName)
 		flag.PrintDefaults()
 		usageMessage := `Commands:
 	new		Generate new private key
 	address		Convert given private key to address
 	public		Convert given private key to public key
+	checksum	Convert given address to checksum case
 `
 		fmt.Printf("%s", usageMessage)
 	}
@@ -85,6 +94,13 @@ func main() {
 		if err := publicCmd.Parse(os.Args[2:]); err == nil {
 			public := privateKeyToPublic(publicCmd.Args()[0])
 			fmt.Printf("%s\n", public)
+		} else {
+			log.Fatalf("private key to public key flag parse error: %v", err)
+		}
+	case "checksum":
+		if err := checksumCmd.Parse(os.Args[2:]); err == nil {
+			address := addressToChecksumCase(checksumCmd.Args()[0])
+			fmt.Printf("%s\n", address)
 		} else {
 			log.Fatalf("private key to public key flag parse error: %v", err)
 		}
