@@ -3,7 +3,7 @@ module kkn.fi/cmd/ewallet
 go 1.17
 
 require (
-	github.com/ethereum/go-ethereum v1.10.18
+	github.com/ethereum/go-ethereum v1.10.19
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519 // indirect
 )
 
