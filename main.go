@@ -52,14 +52,37 @@ func addressToChecksumCase(address string) string {
 }
 
 func main() {
+	newCmd := flag.NewFlagSet("new", flag.ExitOnError)
+	newCmd.Usage = func() {
+		out := flag.CommandLine.Output()
+		fmt.Fprintf(out, "Usage: ewallet new [-h]\n")
+		fmt.Fprintf(out, "Generate new private key\n")
+	}
 	addressCmd := flag.NewFlagSet("address", flag.ExitOnError)
+	addressCmd.Usage = func() {
+		out := flag.CommandLine.Output()
+		fmt.Fprintf(out, "Usage: ewallet address [-h] private_key\n")
+		fmt.Fprintf(out, "Convert given private key to address\n")
+	}
 	publicCmd := flag.NewFlagSet("public", flag.ExitOnError)
+	publicCmd.Usage = func() {
+		out := flag.CommandLine.Output()
+		fmt.Fprintf(out, "Usage: ewallet public [-h] private_key\n")
+		fmt.Fprintf(out, "Convert given private key to public key\n")
+	}
 	checksumCmd := flag.NewFlagSet("checksum", flag.ExitOnError)
+	checksumCmd.Usage = func() {
+		out := flag.CommandLine.Output()
+		fmt.Fprintf(out, "Usage: ewallet checksum [-h] private_key\n")
+		fmt.Fprintf(out, "Convert given address to checksum case\n")
+	}
+	help := flag.Bool("h", false, "help message")
 	flag.Parse()
 	flag.Usage = func() {
 		out := flag.CommandLine.Output()
 		cmdName := os.Args[0]
-		fmt.Fprintf(out, "Usage of %s: %s command\n", cmdName, cmdName)
+		fmt.Fprintf(out, "Usage: %s command\n", cmdName)
+		fmt.Fprintf(out, "Flags:\n")
 		flag.PrintDefaults()
 		usageMessage := `Commands:
 	new		Generate new private key
@@ -69,21 +92,30 @@ func main() {
 `
 		fmt.Printf("%s", usageMessage)
 	}
-	if len(os.Args) <= 1 {
+	if len(os.Args) <= 1 || *help {
 		flag.Usage()
 		os.Exit(1)
 	}
 	switch os.Args[1] {
 	case "new":
-		privateKey, err := crypto.GenerateKey()
-		if err != nil {
-			log.Fatalf("error while generating private key: %v", err)
+		if err := newCmd.Parse(os.Args[2:]); err == nil {
+			privateKey, err := crypto.GenerateKey()
+			if err != nil {
+				log.Fatalf("error while generating private key: %v", err)
+			}
+			privateKeyBytes := crypto.FromECDSA(privateKey)
+			privKey := hexutil.Encode(privateKeyBytes)
+			key := privKey[2:]
+			fmt.Printf("%s\n", key)
+		} else {
+			log.Fatalf("new private key flag parse error: %v", err)
 		}
-		privateKeyBytes := crypto.FromECDSA(privateKey)
-		privKey := hexutil.Encode(privateKeyBytes)
-		key := privKey[2:]
-		fmt.Printf("%s\n", key)
 	case "address":
+		if len(os.Args) < 3 {
+			fmt.Fprintf(flag.CommandLine.Output(), "private key is a required argument\n")
+			addressCmd.Usage()
+			os.Exit(1)
+		}
 		if err := addressCmd.Parse(os.Args[2:]); err == nil {
 			address := privateKeyToAddress(addressCmd.Args()[0])
 			fmt.Printf("%s\n", address)
@@ -91,6 +123,11 @@ func main() {
 			log.Fatalf("private key to address flag parse error: %v", err)
 		}
 	case "public":
+		if len(os.Args) < 3 {
+			fmt.Fprintf(flag.CommandLine.Output(), "private key is a required argument\n")
+			publicCmd.Usage()
+			os.Exit(1)
+		}
 		if err := publicCmd.Parse(os.Args[2:]); err == nil {
 			public := privateKeyToPublic(publicCmd.Args()[0])
 			fmt.Printf("%s\n", public)
@@ -98,6 +135,11 @@ func main() {
 			log.Fatalf("private key to public key flag parse error: %v", err)
 		}
 	case "checksum":
+		if len(os.Args) < 3 {
+			fmt.Fprintf(flag.CommandLine.Output(), "private key is a required argument\n")
+			checksumCmd.Usage()
+			os.Exit(1)
+		}
 		if err := checksumCmd.Parse(os.Args[2:]); err == nil {
 			address := addressToChecksumCase(checksumCmd.Args()[0])
 			fmt.Printf("%s\n", address)
