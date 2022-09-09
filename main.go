@@ -13,7 +13,7 @@ import (
 	"github.com/ethereum/go-ethereum/crypto"
 )
 
-func privateKeyToPublicECDSA(key string) *ecdsa.PublicKey {
+func privateKeyToPublicKey(key string) *ecdsa.PublicKey {
 	key = strings.TrimPrefix(key, "0x")
 	privateKey, err := crypto.HexToECDSA(key)
 	if err != nil {
@@ -28,14 +28,14 @@ func privateKeyToPublicECDSA(key string) *ecdsa.PublicKey {
 }
 
 func privateKeyToAddress(key string) string {
-	publicKeyECDSA := privateKeyToPublicECDSA(key)
+	publicKeyECDSA := privateKeyToPublicKey(key)
 	address := crypto.PubkeyToAddress(*publicKeyECDSA)
 	hexAddress := address.Hex()
 	return hexAddress
 }
 
 func privateKeyToPublic(key string) string {
-	publicKeyECDSA := privateKeyToPublicECDSA(key)
+	publicKeyECDSA := privateKeyToPublicKey(key)
 	publicKey := publicKeyToString(publicKeyECDSA)
 	return publicKey
 }
