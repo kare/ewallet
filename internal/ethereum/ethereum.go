@@ -47,7 +47,7 @@ func PublicKeyToString(publicKeyECDSA *ecdsa.PublicKey) string {
 	return pubKey[4:]
 }
 
-// AddresstoChecksumCase converts an Ethereum address to checksum case.
+// AddressToChecksumCase converts an Ethereum address to checksum case.
 func AddressToChecksumCase(address string) string {
 	a := common.HexToAddress(address)
 	return a.Hex()
