@@ -2,7 +2,7 @@ package ethereum
 
 import (
 	"crypto/ecdsa"
-	"log"
+	"fmt"
 	"strings"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -11,33 +11,36 @@ import (
 )
 
 // PrivateKeyToPublicKey converts given private key to ECDSA public key.
-func PrivateKeyToPublicKey(key string) *ecdsa.PublicKey {
+func PrivateKeyToPublicKey(key string) (*ecdsa.PublicKey, error) {
 	key = strings.TrimPrefix(key, "0x")
 	privateKey, err := crypto.HexToECDSA(key)
 	if err != nil {
-		log.Fatalf("error while converting hex private key to ECDSA: %v", err)
+		return nil, err
 	}
 	publicKey := privateKey.Public()
-	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
-	if !ok {
-		log.Fatal("error casting public key to ECDSA")
-	}
-	return publicKeyECDSA
+	publicKeyECDSA := publicKey.(*ecdsa.PublicKey)
+	return publicKeyECDSA, nil
 }
 
 // PrivateKeyToAddress converts given private key to an address in string format.
-func PrivateKeyToAddress(key string) string {
-	publicKeyECDSA := PrivateKeyToPublicKey(key)
+func PrivateKeyToAddress(key string) (string, error) {
+	publicKeyECDSA, err := PrivateKeyToPublicKey(key)
+	if err != nil {
+		return "", err
+	}
 	address := crypto.PubkeyToAddress(*publicKeyECDSA)
 	hexAddress := address.Hex()
-	return hexAddress
+	return hexAddress, nil
 }
 
 // PrivateKeyToPublic converts given private key to public key in string format.
-func PrivateKeyToPublic(key string) string {
-	publicKeyECDSA := PrivateKeyToPublicKey(key)
+func PrivateKeyToPublic(key string) (string, error) {
+	publicKeyECDSA, err := PrivateKeyToPublicKey(key)
+	if err != nil {
+		return "", err
+	}
 	publicKey := PublicKeyToString(publicKeyECDSA)
-	return publicKey
+	return publicKey, nil
 }
 
 // PublicKeyToString converts ECDSA public key to hex format string.
@@ -48,7 +51,12 @@ func PublicKeyToString(publicKeyECDSA *ecdsa.PublicKey) string {
 }
 
 // AddressToChecksumCase converts an Ethereum address to checksum case.
-func AddressToChecksumCase(address string) string {
+func AddressToChecksumCase(address string) (string, error) {
 	a := common.HexToAddress(address)
-	return a.Hex()
+	h := a.Hex()
+	const zeroAddress = "0x0000000000000000000000000000000000000000"
+	if h == zeroAddress {
+		return "", fmt.Errorf("ethereum: given address is not an Ethereum address: %v", address)
+	}
+	return h, nil
 }
