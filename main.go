@@ -12,6 +12,8 @@ import (
 )
 
 func main() {
+	log.SetFlags(0)
+	log.SetPrefix("ewallet: ")
 	newCmd := flag.NewFlagSet("new", flag.ExitOnError)
 	out := flag.CommandLine.Output()
 	newCmd.Usage = func() {
@@ -30,7 +32,7 @@ func main() {
 	}
 	checksumCmd := flag.NewFlagSet("checksum", flag.ExitOnError)
 	checksumCmd.Usage = func() {
-		fmt.Fprintf(out, "Usage: ewallet checksum [-h] private_key\n")
+		fmt.Fprintf(out, "Usage: ewallet checksum [-h] address\n")
 		fmt.Fprintf(out, "Convert given address to checksum case\n")
 	}
 	help := flag.Bool("h", false, "help message")
@@ -46,7 +48,7 @@ func main() {
 	public		Convert given private key to public key
 	checksum	Convert given address to checksum case
 `
-		fmt.Printf("%s", usageMessage)
+		fmt.Fprintf(out, "%s", usageMessage)
 	}
 	if len(os.Args) <= 1 || *help {
 		flag.Usage()
@@ -68,7 +70,7 @@ func main() {
 		}
 	case "address":
 		if len(os.Args) < 3 {
-			fmt.Fprintf(flag.CommandLine.Output(), "private key is a required argument\n")
+			log.Printf("private key is a required argument\n")
 			addressCmd.Usage()
 			os.Exit(1)
 		}
@@ -84,7 +86,7 @@ func main() {
 		}
 	case "public":
 		if len(os.Args) < 3 {
-			fmt.Fprintf(flag.CommandLine.Output(), "private key is a required argument\n")
+			log.Printf("private key is a required argument\n")
 			publicCmd.Usage()
 			os.Exit(1)
 		}
@@ -100,7 +102,7 @@ func main() {
 		}
 	case "checksum":
 		if len(os.Args) < 3 {
-			fmt.Fprintf(flag.CommandLine.Output(), "private key is a required argument\n")
+			log.Printf("address is a required argument\n")
 			checksumCmd.Usage()
 			os.Exit(1)
 		}
@@ -112,7 +114,7 @@ func main() {
 			}
 			fmt.Printf("%s\n", address)
 		} else {
-			log.Fatalf("private key to public key flag parse error: %v", err)
+			log.Fatalf("address to checksum case flag parse error: %v", err)
 		}
 	}
 }
