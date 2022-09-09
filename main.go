@@ -53,33 +53,29 @@ func addressToChecksumCase(address string) string {
 
 func main() {
 	newCmd := flag.NewFlagSet("new", flag.ExitOnError)
+	out := flag.CommandLine.Output()
 	newCmd.Usage = func() {
-		out := flag.CommandLine.Output()
 		fmt.Fprintf(out, "Usage: ewallet new [-h]\n")
 		fmt.Fprintf(out, "Generate new private key\n")
 	}
 	addressCmd := flag.NewFlagSet("address", flag.ExitOnError)
 	addressCmd.Usage = func() {
-		out := flag.CommandLine.Output()
 		fmt.Fprintf(out, "Usage: ewallet address [-h] private_key\n")
 		fmt.Fprintf(out, "Convert given private key to address\n")
 	}
 	publicCmd := flag.NewFlagSet("public", flag.ExitOnError)
 	publicCmd.Usage = func() {
-		out := flag.CommandLine.Output()
 		fmt.Fprintf(out, "Usage: ewallet public [-h] private_key\n")
 		fmt.Fprintf(out, "Convert given private key to public key\n")
 	}
 	checksumCmd := flag.NewFlagSet("checksum", flag.ExitOnError)
 	checksumCmd.Usage = func() {
-		out := flag.CommandLine.Output()
 		fmt.Fprintf(out, "Usage: ewallet checksum [-h] private_key\n")
 		fmt.Fprintf(out, "Convert given address to checksum case\n")
 	}
 	help := flag.Bool("h", false, "help message")
 	flag.Parse()
 	flag.Usage = func() {
-		out := flag.CommandLine.Output()
 		cmdName := os.Args[0]
 		fmt.Fprintf(out, "Usage: %s command\n", cmdName)
 		fmt.Fprintf(out, "Flags:\n")
