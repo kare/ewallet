@@ -25,12 +25,12 @@ fmt:
 	gofmt -w -s .
 
 .PHONY: goimports
-goimports: fmt $(GOIMPORTS)
+goimports: $(GOIMPORTS)
 	goimports -w .
 
 .PHONY: staticcheck
 staticcheck: $(STATICCHECK)
-	staticcheck -go 1.17 ./...
+	staticcheck ./...
 
 .PHONY: clean
 clean: ## Remove all files created by this Makefile
