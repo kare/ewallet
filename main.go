@@ -116,5 +116,8 @@ func main() {
 		} else {
 			log.Fatalf("address to checksum case flag parse error: %v", err)
 		}
+	default:
+		flag.Usage()
+		os.Exit(1)
 	}
 }
