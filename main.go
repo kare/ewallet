@@ -1,55 +1,15 @@
 package main
 
 import (
-	"crypto/ecdsa"
 	"flag"
 	"fmt"
 	"log"
 	"os"
-	"strings"
 
-	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/crypto"
+	"kkn.fi/cmd/ewallet/internal/ethereum"
 )
-
-func privateKeyToPublicKey(key string) *ecdsa.PublicKey {
-	key = strings.TrimPrefix(key, "0x")
-	privateKey, err := crypto.HexToECDSA(key)
-	if err != nil {
-		log.Fatalf("error while converting hex private key to ECDSA: %v", err)
-	}
-	publicKey := privateKey.Public()
-	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
-	if !ok {
-		log.Fatal("error casting public key to ECDSA")
-	}
-	return publicKeyECDSA
-}
-
-func privateKeyToAddress(key string) string {
-	publicKeyECDSA := privateKeyToPublicKey(key)
-	address := crypto.PubkeyToAddress(*publicKeyECDSA)
-	hexAddress := address.Hex()
-	return hexAddress
-}
-
-func privateKeyToPublic(key string) string {
-	publicKeyECDSA := privateKeyToPublicKey(key)
-	publicKey := publicKeyToString(publicKeyECDSA)
-	return publicKey
-}
-
-func publicKeyToString(publicKeyECDSA *ecdsa.PublicKey) string {
-	publicKeyBytes := crypto.FromECDSAPub(publicKeyECDSA)
-	pubKey := hexutil.Encode(publicKeyBytes)
-	return pubKey[4:]
-}
-
-func addressToChecksumCase(address string) string {
-	a := common.HexToAddress(address)
-	return a.Hex()
-}
 
 func main() {
 	newCmd := flag.NewFlagSet("new", flag.ExitOnError)
@@ -113,7 +73,7 @@ func main() {
 			os.Exit(1)
 		}
 		if err := addressCmd.Parse(os.Args[2:]); err == nil {
-			address := privateKeyToAddress(addressCmd.Args()[0])
+			address := ethereum.PrivateKeyToAddress(addressCmd.Args()[0])
 			fmt.Printf("%s\n", address)
 		} else {
 			log.Fatalf("private key to address flag parse error: %v", err)
@@ -125,7 +85,7 @@ func main() {
 			os.Exit(1)
 		}
 		if err := publicCmd.Parse(os.Args[2:]); err == nil {
-			public := privateKeyToPublic(publicCmd.Args()[0])
+			public := ethereum.PrivateKeyToPublic(publicCmd.Args()[0])
 			fmt.Printf("%s\n", public)
 		} else {
 			log.Fatalf("private key to public key flag parse error: %v", err)
@@ -137,7 +97,7 @@ func main() {
 			os.Exit(1)
 		}
 		if err := checksumCmd.Parse(os.Args[2:]); err == nil {
-			address := addressToChecksumCase(checksumCmd.Args()[0])
+			address := ethereum.AddressToChecksumCase(checksumCmd.Args()[0])
 			fmt.Printf("%s\n", address)
 		} else {
 			log.Fatalf("private key to public key flag parse error: %v", err)
