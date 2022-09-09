@@ -2,7 +2,7 @@ package ethereum
 
 import (
 	"crypto/ecdsa"
-	"fmt"
+	"errors"
 	"strings"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -56,7 +56,7 @@ func AddressToChecksumCase(address string) (string, error) {
 	h := a.Hex()
 	const zeroAddress = "0x0000000000000000000000000000000000000000"
 	if h == zeroAddress {
-		return "", fmt.Errorf("ethereum: given address is not an Ethereum address: %v", address)
+		return "", errors.New("ethereum: given address is not an Ethereum address")
 	}
 	return h, nil
 }
