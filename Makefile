@@ -1,11 +1,10 @@
 LANG = en_US.UTF-8
 SHELL = /bin/bash
-.SHELLFLAGS = -eu -o pipefail -c # run '/bin/bash ... -c /bin/cmd'
+.SHELLFLAGS = -e -u -o pipefail -c
 .DEFAULT_GOAL = build
 
 GOIMPORTS = $(GOPATH)/bin/goimports
 STATICCHECK = $(GOPATH)/bin/staticcheck
-GOLANGCI-LINT = $(GOPATH)/bin/golangci-lint
 
 .PHONY: build
 build: ## Build ewallet
@@ -21,24 +20,21 @@ $(GOIMPORTS):
 $(STATICCHECK):
 	go install honnef.co/go/tools/cmd/staticcheck@latest
 
-$(GOLANGCI-LINT):
-	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.41.1
-
+.PHONY: fmt
 fmt:
 	gofmt -w -s .
 
+.PHONY: goimports
 goimports: fmt $(GOIMPORTS)
 	goimports -w .
 
+.PHONY: staticcheck
 staticcheck: $(STATICCHECK)
 	staticcheck -go 1.17 ./...
 
-golangci-lint: $(GOLANGCI-LINT)
-	golangci-lint run ./...
-
 .PHONY: clean
 clean: ## Remove all files created by this Makefile
-	rm -rf \
+	$(RM) \
 		ewallet
 
 .PHONY: help
