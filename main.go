@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/crypto"
 	"kkn.fi/cmd/ewallet/internal/ethereum"
@@ -107,7 +108,11 @@ func main() {
 			os.Exit(1)
 		}
 		if err := checksumCmd.Parse(os.Args[2:]); err == nil {
-			address, err := ethereum.AddressToChecksumCase(checksumCmd.Args()[0])
+			s := checksumCmd.Args()[0]
+			if isValidAddress := common.IsHexAddress(s); !isValidAddress {
+				log.Fatalf("given adress is not a valid Ethereum address in hex format")
+			}
+			address, err := ethereum.AddressToChecksumCase(s)
 			if err != nil {
 				log.Printf("error while converting address to checksum case: %v", err)
 				os.Exit(1)
