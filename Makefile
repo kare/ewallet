@@ -34,8 +34,7 @@ staticcheck: $(STATICCHECK)
 
 .PHONY: clean
 clean: ## Remove all files created by this Makefile
-	$(RM) \
-		ewallet
+	go clean -i
 
 .PHONY: help
 help: ## Show Help
