@@ -34,7 +34,7 @@ func main() {
 	checksumCmd := flag.NewFlagSet("checksum", flag.ExitOnError)
 	checksumCmd.Usage = func() {
 		fmt.Fprintf(out, "Usage: ewallet checksum [-h] address\n")
-		fmt.Fprintf(out, "Convert given address to checksum case\n")
+		fmt.Fprintf(out, "Convert given address to mixed-case checksum address encoding\n")
 	}
 	help := flag.Bool("h", false, "help message")
 	flag.Parse()
@@ -47,7 +47,7 @@ func main() {
 	new		Generate new private key
 	address		Convert given private key to address
 	public		Convert given private key to public key
-	checksum	Convert given address to checksum case
+	checksum	Convert given address to mixed-case checksum address encoding
 `
 		fmt.Fprintf(out, "%s", usageMessage)
 	}
