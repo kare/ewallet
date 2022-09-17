@@ -62,7 +62,7 @@ func main() {
 	flag.Parse()
 	flag.Usage = func() {
 		cmdName := os.Args[0]
-		fmt.Fprintf(out, "Usage: %s command\n", cmdName)
+		fmt.Fprintf(out, "Usage: %s [command] [private key | address]\n", cmdName)
 		fmt.Fprintf(out, "Flags:\n")
 		flag.PrintDefaults()
 		usageMessage := `Commands:
