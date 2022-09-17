@@ -78,8 +78,7 @@ func main() {
 		if err := addressCmd.Parse(os.Args[2:]); err == nil {
 			address, err := ethereum.PrivateKeyToAddress(addressCmd.Args()[0])
 			if err != nil {
-				log.Printf("error while converting private key to address: %v", err)
-				os.Exit(1)
+				log.Fatalf("error while converting private key to address: %v", err)
 			}
 			fmt.Printf("%s\n", address)
 		} else {
@@ -94,8 +93,7 @@ func main() {
 		if err := publicCmd.Parse(os.Args[2:]); err == nil {
 			public, err := ethereum.PrivateKeyToPublic(publicCmd.Args()[0])
 			if err != nil {
-				log.Printf("error while converting private key to public key: %v", err)
-				os.Exit(1)
+				log.Fatalf("error while converting private key to public key: %v", err)
 			}
 			fmt.Printf("%s\n", public)
 		} else {
@@ -114,8 +112,7 @@ func main() {
 			}
 			address, err := ethereum.AddressToChecksumCase(s)
 			if err != nil {
-				log.Printf("error while converting address to checksum case: %v", err)
-				os.Exit(1)
+				log.Fatalf("error while converting address to checksum case: %v", err)
 			}
 			fmt.Printf("%s\n", address)
 		} else {
