@@ -1,3 +1,25 @@
+/*
+ewallet is an experimental Ethereum command line utility that converts an
+Ethereum private key to address or public key and to converts an Ethereum
+adress to mixed-case checksum case as defined in [EIP-55].
+
+Usage:
+
+    ewallet [command] [private key | address]
+
+The commands are:
+
+	new
+		Generate new Ethereum private key.
+	address
+		Convert private key to address.
+	public
+		Convert private key to public key.
+	checksum
+		Convert address to mixed-case checksum address encoding.
+
+[EIP-55]: https://eips.ethereum.org/EIPS/eip-55
+*/
 package main
 
 import (
